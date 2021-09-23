@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity 0.6.12;
 
 import "./libs/BEP20.sol";
@@ -8,6 +10,11 @@ contract GoalToken is BEP20('Goal Token', 'GOAL') {
     function mint(address _to, uint256 _amount) public onlyOwner {
         _mint(_to, _amount);
         _moveDelegates(address(0), _delegates[_to], _amount);
+    }
+
+    function _transfer(address sender, address recipient, uint256 amount) internal override {
+        super._transfer(sender, recipient, amount);
+        _moveDelegates(_delegates[sender], _delegates[recipient], amount);
     }
 
     // Copied and modified from YAM code:
